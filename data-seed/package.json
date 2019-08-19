@@ -1,0 +1,26 @@
+{
+  "name": "dashb-seeding",
+  "version": "1.0.0",
+  "description": "data seed for dashb mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "DEBUG=mongo-seed node ./index.js"
+  },
+  "keywords": [
+    "mongo-seeding"
+  ],
+  "author": "Irving Armenta",
+  "license": "MIT",
+  "dependencies": {
+    "mongo-seeding": "^3.3.0",
+    "mongodb": "^3.3.0",
+    "ts-node": "^8.3.0",
+    "typeorm": "^0.2.18"
+  },
+  "devDependencies": {
+    "@types/mongodb": "^3.2.3",
+    "@types/node": "^12.7.2",
+    "typescript": "^3.5.3"
+  }
+}

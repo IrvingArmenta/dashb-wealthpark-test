@@ -1,28 +1,21 @@
 import React from 'react';
-import { Box, Button, Provider } from 'rendition';
-import './App.css';
+import Content from './components/layout/Content';
+import Footer from './components/layout/Footer';
+import Header from './components/layout/Header';
+import MainLayout from './components/layout/MainLayout';
+import GlobalStyle from './global-styles/GlobalStyle';
 
 const App = () => {
-  
+
   return (
-    <Provider>
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-            <Button>TEST</Button>
-            </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-            </a>
-        </header>
-      </div>
-    </Provider>
+    <>
+      <GlobalStyle />
+      <MainLayout>
+        <Header />
+        <Content p={10}>TEST</Content>
+        <Footer />
+      </MainLayout>
+    </>
   );
 
 }

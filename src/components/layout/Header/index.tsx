@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
+import StyledHeader from './Header.style';
 
-interface HeaderProps {
-  absolute: boolean;
-}
-
-class Header extends Component<HeaderProps> {
-  constructor(props: HeaderProps) {
-    super(props);
-  }
-
-}
-
+const Header = () => {
+  return (
+    <StyledHeader className="header">
+      <section className="header__section">DashB</section>
+      <section className="header__section right">
+        <span>Link</span>
+      </section>
+    </StyledHeader>
+  );
+};
 
 export default Header;

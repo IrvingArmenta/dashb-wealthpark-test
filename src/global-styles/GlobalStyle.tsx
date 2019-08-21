@@ -7,7 +7,7 @@ export const GLOBAL_STYLES = {
   APP_BG_COLOR: '#ffffff',
   APP_PRIMARY_COLOR: '#5e72e4',
   APP_DEFAULT_COLOR: '#172b4d',
-  APP_DANGER_COLOR: '#f5365c',
+  APP_DANGER_COLOR: '#e4012e',
   APP_SUCCESS_COLOR: '#2dce89',
   APP_INFO_COLOR: '#11cdef',
   APP_WHITE_COLOR: '#f4f0f5',
@@ -77,8 +77,8 @@ const GlobalStyle = createGlobalStyle`
         > div {
             width: 100%;
         }
-    }
-    // common reset for headings 
+    };
+
     h1,
     h2,
     h3,

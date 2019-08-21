@@ -2,12 +2,13 @@ import axios from 'axios';
 import { ObjectId } from 'mongodb';
 
 export interface User {
-  _id: string;
   name: string;
   email: string
   password: string;
   role: string;
 }
+
+export type UserAuth = Pick<User, 'email' | 'password'>;
 
 export type userArray = User[];
 
@@ -23,12 +24,18 @@ const API_METHODS = {
   authUser: 'authUser'
 };
 
-const API = axios.create({
+export const API = axios.create({
   baseURL: API_BASE,
   responseType: "json"
 });
 
-export const getUsers = async () => {
+/**
+ * 
+ * Get All Users in DB
+ * 
+ * @return {Promise} if success returns all users from db
+ */
+export const getUsers = async (): Promise<any> => {
   try {
     const response = await API.get(API_METHODS.getUsers);
     return response.data;
@@ -37,22 +44,35 @@ export const getUsers = async () => {
   }
 }
 
-export const deleteUser = async (id: string) => {
+export const deleteUser = async (id: string, jwt: string) => {
   try {
-    await API.delete(API_METHODS.deleteUser, {
+    const response = await API.delete(API_METHODS.deleteUser, {
+      headers: {
+        "x-auth-token": jwt,
+      },
       data: {
         id
-      }
+      },
     });
+    return response.data;
   } catch (error) {
     console.log(JSON.stringify(error));
   }
 }
 
 export const createUser = async (userData: User) => {
-  try { 
-    await API.post(API_METHODS.createUser, userData); 
+   try { 
+    const response = await API.post(API_METHODS.createUser, userData);
+    return {
+      data: response.data,
+      header: response.headers,
+      request: response.request,
+    }
   } catch (error) {
-    console.log(JSON.stringify(error));
+    return false;
   }
+}
+
+export const authUser = (userCredentials: UserAuth) => {
+  return API.post(API_METHODS.authUser, userCredentials);
 }

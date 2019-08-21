@@ -1,5 +1,5 @@
-import { ObjectId } from 'mongodb';
 import { createHash } from 'crypto';
+import { ObjectId } from 'mongodb';
 
 export const getObjectId = (name: string): ObjectId => {
   const hash = createHash('sha1')

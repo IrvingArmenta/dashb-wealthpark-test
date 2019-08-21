@@ -6,8 +6,9 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const { User, validate, validateAuth } = require('./models/user');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const _ = require('lodash');
 const config = require('config');
+const auth = require('./middleware/auth');
 
 const API_PORT = 3333;
 const app = express();
@@ -24,7 +25,7 @@ const dbRoute =
   'mongodb://localhost/dashb';
 
 // connects our back end code with the database
-mongoose.connect(dbRoute, {useNewUrlParser: true});
+mongoose.connect(dbRoute, { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
@@ -46,13 +47,36 @@ app.use(logger('dev'));
 router.get('/getUsers', (req, res) => {
   User.find((err, data) => {
     if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
+
+    const userData = data.map((user) => {
+      return {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    });
+
+    return res.json({ success: true, data: userData });
   });
+});
+
+// this method gets one user by it's email
+router.get('/getUserByEmail', async (req, res) => {
+  let user = await User.findOne({ email: req.body.email });
+  if(!user) {
+    res.status(400).send("User doesn't exist");
+  } else {
+    res.json({
+      id: user._id,
+      name: user.name,
+      role: user.role,
+    });
+  }
 });
 
 // this is our update method
 // this method overwrites existing data in our database
-router.post('/updateUser', (req, res) => {
+router.post('/updateUser', auth, (req, res) => {
   const { id, update } = req.body;
   User.findByIdAndUpdate(id, update, (err) => {
     if (err) return res.json({ success: false, error: err });
@@ -62,7 +86,7 @@ router.post('/updateUser', (req, res) => {
 
 // this is our delete method
 // this method removes existing data in our database
-router.delete('/deleteUser', (req, res) => {
+router.delete('/deleteUser', auth, (req, res) => {
   const { id } = req.body;
   User.findByIdAndRemove(id, (err) => {
     if (err) return res.send(err);
@@ -70,31 +94,32 @@ router.delete('/deleteUser', (req, res) => {
   });
 });
 
-// this is our create methid
+// this is our create method
 // this method adds new data in our database
 router.post('/createUser', async (req, res) => {
   // First Validate The Request
   const { error } = validate(req.body);
   if (error) {
-      return res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
   // Check if this user already exisits
   let user = await User.findOne({ email: req.body.email });
   if (user) {
-      return res.status(400).send('That user already exisits!');
+    return res.status(400).send('That user already exisits!');
   } else {
-      // Insert the new user if they do not exist yet
-      user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        role: req.body.role,
+    // Insert the new user if they do not exist yet
+    user = new User({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      role: req.body.role || 'user',
     });
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
-    res.send(user);
+    const token = user.generateAuthToken();
+    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
   }
 });
 
@@ -104,24 +129,44 @@ router.post('/authUser', async (req, res) => {
   // First Validate The HTTP Request
   const { error } = validateAuth(req.body);
   if (error) {
-      return res.status(400).send(error.details[0].message);
+    return res.status(400).send(error.details[0].message);
   }
 
-  //  Now find the user by their email address
-  let user = await User.findOne({ email: req.body.email });
-  if (!user) {
-      return res.status(400).send('Incorrect email or password.');
-  }
+   User.findOne({
+    email: req.body.email
+  }, async function(err, user) {
+    if (err) throw err;
 
-  // Then validate the Credentials in MongoDB match
-  // those provided in the request
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) {
-      return res.status(400).send('Incorrect email or password.');
-  }
+    // validation
+    if (!user) {
+      res.json({
+        success: false,
+        message: "Authentication failed. User not found"
+      })
+      return;
+    }
 
-  const token = jwt.sign({ _id: user._id }, config.get("PrivateKey"));
-  res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
+    let validPassword = await bcrypt.compare(req.body.password, user.password);
+
+    if (!validPassword) {
+      res.json({
+        success: false,
+        message: 'Authentication failed. Wrong password.'
+      })
+      return;
+    }
+
+    // when valid -> create token
+    let token = user.generateAuthToken();
+
+    res.json({
+      success: true,
+      message: 'Authentication successfully finished.',
+      token: token
+    });
+
+  });
+
 });
 
 // append /api for our http requests

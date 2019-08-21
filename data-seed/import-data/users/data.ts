@@ -1,5 +1,5 @@
-import { getObjectId } from './helpers';
-import { seedUser } from '../src/api/methods';
+import { seedUser } from '../../../src/api';
+import { getObjectId } from '../../helpers';
 
 const names = ["Hanamichi", "Rukawa", "Haruko", "Akagi", "Mitsuki"];
 
@@ -13,4 +13,4 @@ const users: seedUser[] = names.map((name, i) => {
   }
 });
 
-export = users;
+export default users;

@@ -11,7 +11,7 @@ const config = {
 const seeder = new Seeder(config);
 
 const collections = seeder.readCollectionsFromPath(
-  path.resolve('data'),
+  path.resolve('./data-seed/import-data'),
   {
     extensions: ['js', 'json', 'ts'],
     transformers: [Seeder.Transformers.replaceDocumentIdWithUnderscoreId],

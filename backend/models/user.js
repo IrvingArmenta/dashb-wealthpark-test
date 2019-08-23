@@ -1,3 +1,5 @@
+"use strict";
+
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const config = require('config');
@@ -56,5 +58,6 @@ function validateAuth(req) {
 }
  
 exports.User = User;
+exports.userSchema = userSchema;
 exports.validate = validateUser;
 exports.validateAuth = validateAuth;

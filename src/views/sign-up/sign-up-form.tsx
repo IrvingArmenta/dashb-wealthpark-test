@@ -4,7 +4,6 @@ import Form from '../../components/form';
 import { ErrorMsg, TextInput } from '../../components/form/molecules';
 
 import { Formik, FormikActions, FormikProps } from 'formik';
-import { Link } from 'react-router-dom';
 import { createUser } from '../../api';
 import SignUpSchema from './form-schema';
 
@@ -37,7 +36,6 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
       return (
         <div style={{ textAlign: 'center' }}>
           <h2>User was created</h2>
-          <Link to="/login">Go back to login page</Link>
         </div>
       )
     }
@@ -49,6 +47,7 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
           validationSchema={SignUpSchema}
           onSubmit={(values: SignUpFormValues, actions: FormikActions<SignUpFormValues>) => {
 
+            // user.id is assigned by mongodb
             const reqBody = {
               name: values.name,
               email: values.email,
@@ -64,13 +63,13 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
                   this.setState({
                     error: true,
                   });
+                  actions.setSubmitting(false);
                 } else {
                   this.setState({
                     success: true,
                   });
+                  actions.setSubmitting(false);
                 }
-                
-                actions.setSubmitting(false);
               })
             }, 500);
 

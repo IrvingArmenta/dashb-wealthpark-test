@@ -1,7 +1,11 @@
 import axios from 'axios';
-import { ObjectId } from 'mongodb';
+
+const CancelToken = axios.CancelToken;
+export const source = CancelToken.source();
+
 
 export interface User {
+  id: string;
   name: string;
   email: string
   password: string;
@@ -10,14 +14,15 @@ export interface User {
 
 export type UserAuth = Pick<User, 'email' | 'password'>;
 
-export type userArray = User[];
+type newUser = Omit<User, 'id'>;
 
-export type seedUser = User & { id: ObjectId };
+export type userArray = User[];
 
 const API_BASE = 'http://localhost:3333/api/';
 
 const API_METHODS = {
   getUsers: 'getUsers',
+  getPaginatedUsers: 'getPaginatedUsers',
   deleteUser: 'deleteUser',
   updateUser: 'updateUser',
   createUser: 'createUser',
@@ -37,8 +42,21 @@ export const API = axios.create({
  */
 export const getUsers = async (): Promise<any> => {
   try {
-    const response = await API.get(API_METHODS.getUsers);
+    const response = await API.get(API_METHODS.getUsers, { cancelToken: source.token });
     return response.data;
+  } catch (error) {
+    console.log(JSON.stringify(error));
+  }
+}
+
+export const getPaginatedUsers = async (pageNo: number, usersPerPage: number): Promise<any> => {
+  try {
+    const response = await API.post(API_METHODS.getPaginatedUsers,
+      { pageNo, usersPerPage },
+      { cancelToken: source.token });
+
+    return response.data;
+
   } catch (error) {
     console.log(JSON.stringify(error));
   }
@@ -53,16 +71,17 @@ export const deleteUser = async (id: string, jwt: string) => {
       data: {
         id
       },
+      cancelToken: source.token,
     });
     return response.data;
   } catch (error) {
-    console.log(JSON.stringify(error));
+    return false;
   }
 }
 
-export const createUser = async (userData: User) => {
-   try { 
-    const response = await API.post(API_METHODS.createUser, userData);
+export const createUser = async (userData: newUser) => {
+  try {
+    const response = await API.post(API_METHODS.createUser, userData, { cancelToken: source.token });
     return {
       data: response.data,
       header: response.headers,
@@ -74,5 +93,5 @@ export const createUser = async (userData: User) => {
 }
 
 export const authUser = (userCredentials: UserAuth) => {
-  return API.post(API_METHODS.authUser, userCredentials);
+  return API.post(API_METHODS.authUser, userCredentials, { cancelToken: source.token });
 }

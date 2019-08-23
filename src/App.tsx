@@ -11,6 +11,13 @@ import SignUpView from './views/sign-up';
 
 class App extends Component {
 
+  public seedDB(env: string) {
+    // ONLY FOR MOCKING - SEEDS THE LOCAL MONGODB
+    // if(env === 'development') {
+    //   API.get('seedDB');
+    // }
+  }
+
 
   public render() {
   return (

@@ -1,3 +1,4 @@
+"use strict";
 
 const mongoose = require('mongoose');
 const express = require('express');
@@ -12,6 +13,7 @@ const auth = require('./middleware/auth');
 
 const API_PORT = 3333;
 const app = express();
+
 app.use(cors());
 const router = express.Router();
 
@@ -22,15 +24,17 @@ if (!config.get('PrivateKey')) {
 
 // this is our MongoDB database
 const dbRoute =
-  'mongodb://localhost/dashb';
+  'mongodb://localhost/';
+
+const dbCollection = dbRoute + 'dashb';
+
 
 // connects our back end code with the database
-mongoose.connect(dbRoute, { useNewUrlParser: true });
+mongoose.connect(dbCollection, { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 
 let db = mongoose.connection;
-
 db.once('open', () => console.log('connected to the database'));
 
 // checks if connection with the database is successful
@@ -50,6 +54,7 @@ router.get('/getUsers', (req, res) => {
 
     const userData = data.map((user) => {
       return {
+        id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -60,10 +65,54 @@ router.get('/getUsers', (req, res) => {
   });
 });
 
+router.post('/getPaginatedUsers', (req, res) => {
+  let pageNo = parseInt(req.body.pageNo);
+  let usersPerPage = parseInt(req.body.usersPerPage);
+  let query = {};
+
+  if (pageNo < 0 || pageNo === 0) {
+    let response = { "error": true, "message": "invalid page number, should start with 1" };
+    return res.json(response);
+  }
+
+  query.skip = usersPerPage * (pageNo - 1);
+  query.limit = usersPerPage;
+
+  User.countDocuments({}, (err, totalCount) => {
+    if (err) {
+      let response = { "error": true, "message": "Error fetching data" }
+      res.json(response);
+    }
+
+    User.find({}, {}, query, function (err, data) {
+      // Mongo command to fetch all data from collection.
+      if (err) {
+        let response = { "error": true, "message": "Error fetching data" };
+        res.json(response);
+      } else {
+        let totalPages = Math.ceil(totalCount / usersPerPage);
+        
+        const usersData = data.map((user) => {
+          return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          }
+        });
+
+        let response = { "error": false, "data": usersData, "pages": totalPages };
+        res.json(response);
+      }
+    });
+  });
+
+});
+
 // this method gets one user by it's email
 router.get('/getUserByEmail', async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
-  if(!user) {
+  if (!user) {
     res.status(400).send("User doesn't exist");
   } else {
     res.json({
@@ -132,9 +181,9 @@ router.post('/authUser', async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
 
-   User.findOne({
+  User.findOne({
     email: req.body.email
-  }, async function(err, user) {
+  }, async function (err, user) {
     if (err) throw err;
 
     // validation
@@ -169,8 +218,11 @@ router.post('/authUser', async (req, res) => {
 
 });
 
+
 // append /api for our http requests
 app.use('/api', router);
 
 // launch our backend into a port
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
+
+exports.dbCollection = dbCollection;

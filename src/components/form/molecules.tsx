@@ -14,15 +14,14 @@ export const TextInput = styled(InputGroup) <TextInputType>`
   .${Classes.INPUT} {
     border-color: ${p => !p.showerror ? "#fff" : p.theme.colors.danger};
     &:focus {
-      box-shadow: ${p => !p.showerror ? 
-        '0 0 0 1px #137cbd, 0 0 0 3px rgba(19, 124, 189, 0.3), inset 0 1px 1px rgba(16, 22, 26, 0.2)' 
-      : `0 0 0 1px ${p.theme.colors.danger}, 0 0 0 3px ${rgba(p.theme.colors.danger, 0.3)}, inset 0 1px 1px ${rgba(p.theme.colors.danger, 0.2)}`};
+      box-shadow: ${p => !p.showerror ?
+    '0 0 0 1px #137cbd, 0 0 0 3px rgba(19, 124, 189, 0.3), inset 0 1px 1px rgba(16, 22, 26, 0.2)'
+    : `0 0 0 1px ${p.theme.colors.danger}, 0 0 0 3px ${rgba(p.theme.colors.danger, 0.3)}, inset 0 1px 1px ${rgba(p.theme.colors.danger, 0.2)}`};
     }
   }
 `;
 
 TextInput.defaultProps = {
-  large: true,
   type: "text",
 }
 

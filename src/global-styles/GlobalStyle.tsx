@@ -67,10 +67,11 @@ const GlobalStyle = createGlobalStyle`
             }
         }
     }
-  
-    main {
-        display: block;
+
+    .main {
+      height: 100%;
     }
+
     .route-transition-wrap {
         position: relative;
         width: 100%;

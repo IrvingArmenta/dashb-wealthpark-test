@@ -1,4 +1,3 @@
-import { Divider } from '@blueprintjs/core';
 import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '../../components/layout/Box';

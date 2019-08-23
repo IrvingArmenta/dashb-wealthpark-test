@@ -31,7 +31,8 @@ declare module 'styled-components' {
     };
     /**
      * @remarks
-     * fontSizes should be set in rem units , by default the base is 10px, therefore (1rem = 10px) , (1.4rem = 14px) etc.
+     * fontSizes should be set in rem units , 
+     * by default the base is 10px, therefore (1rem = 10px) , (1.4rem = 14px) etc.
      * look at the defaultTheme to see how to set baseline properly.
      */
     fontSizes: {

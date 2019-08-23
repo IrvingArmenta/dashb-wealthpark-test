@@ -1,10 +1,21 @@
-# Dashb - MERN implementation 
+# Dashb - dashboard test implementation
 
-## Tech Stack 
-### `Frontend` 
-- React 
-- [rendition UI](https://github.com/balena-io-modules/rendition)
+## Technical Stack 
 
+#### Frontend
+- [React](https://github.com/facebook/react) - JS framework
+- [styled-components](https://www.styled-components.com/) - styling
+- [Formik](https://jaredpalmer.com/formik/) - Form validation
+- [lscache](https://github.com/pamelafox/lscache) - local storage management
+
+#### Backend 
+- [Docker](https://www.docker.com/)
+- [MongoDB](https://www.mongodb.com/jp)
+- [Mongoose](https://github.com/Automattic/mongoose)
+- [NodeJS](https://nodejs.org/ja/)
+- [Express](https://expressjs.com/ja/api.html)
+
+---
 
 # Create React App - Readme
 

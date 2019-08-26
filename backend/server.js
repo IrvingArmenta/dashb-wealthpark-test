@@ -52,7 +52,7 @@ router.get('/getUsers', (req, res) => {
   User.find((err, data) => {
     if (err) return res.json({ success: false, error: err });
 
-    const userData = data.map((user) => {
+    const userData = data.map(user => {
       return {
         id: user._id,
         name: user.name,
@@ -91,8 +91,8 @@ router.post('/getPaginatedUsers', (req, res) => {
         res.json(response);
       } else {
         let totalPages = Math.ceil(totalCount / usersPerPage);
-        
-        const usersData = data.map((user) => {
+
+        const usersData = data.map(user => {
           return {
             id: user._id,
             name: user.name,
@@ -110,7 +110,7 @@ router.post('/getPaginatedUsers', (req, res) => {
 });
 
 // this method gets one user by it's email
-router.get('/getUserByEmail', async (req, res) => {
+router.post('/getUserByEmail', async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
   if (!user) {
     res.status(400).send("User doesn't exist");
@@ -126,7 +126,7 @@ router.get('/getUserByEmail', async (req, res) => {
 // this is our update method
 // this method overwrites existing data in our database
 router.post('/updateUser', auth, (req, res) => {
-  const { id, update } = req.body;
+  const { id, update } = req.body.data;
   User.findByIdAndUpdate(id, update, (err) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });

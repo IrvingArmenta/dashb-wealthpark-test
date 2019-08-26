@@ -2,8 +2,6 @@ import axios from 'axios';
 
 const CancelToken = axios.CancelToken;
 export const source = CancelToken.source();
-
-
 export interface User {
   id: string;
   name: string;
@@ -23,6 +21,7 @@ const API_BASE = 'http://localhost:3333/api/';
 const API_METHODS = {
   getUsers: 'getUsers',
   getPaginatedUsers: 'getPaginatedUsers',
+  getUserByEmail: 'getUserByEmail',
   deleteUser: 'deleteUser',
   updateUser: 'updateUser',
   createUser: 'createUser',
@@ -48,6 +47,16 @@ export const getUsers = async (): Promise<any> => {
     console.log(JSON.stringify(error));
   }
 }
+
+export const getUserByEmail = async (email: string): Promise<any> => {
+  try {
+    const response = await API.post(API_METHODS.getUserByEmail,{email}, { cancelToken: source.token });
+    return response.data;
+  } catch (error) {
+    console.log(JSON.stringify(error));
+  }
+}
+
 
 export const getPaginatedUsers = async (pageNo: number, usersPerPage: number): Promise<any> => {
   try {
@@ -92,6 +101,34 @@ export const createUser = async (userData: newUser) => {
   }
 }
 
-export const authUser = (userCredentials: UserAuth) => {
-  return API.post(API_METHODS.authUser, userCredentials, { cancelToken: source.token });
+export const authUser = async (userCredentials: UserAuth) => {
+  try {
+    const response = await API.post(API_METHODS.authUser, userCredentials, { cancelToken: source.token });
+    return response.data;
+  } catch (error) {
+    return 'error from function in front';
+  }
+}
+
+export const updateUser = async (userId: string, updatedData: Partial<newUser>, jwt: string) => {
+  try {
+    const response = await API.post('updateUser', {
+      data: {
+        id: userId,
+        update: {
+          name: updatedData.name,
+          password: updatedData.password,
+          email: updatedData.email,
+          role: updatedData.role
+        }
+      }}, {
+        headers: {
+          "x-auth-token": jwt,
+        },
+        cancelToken: source.token,
+      });
+    return response.data;
+  } catch (error) {
+    return false;
+  }
 }

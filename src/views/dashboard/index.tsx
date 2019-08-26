@@ -1,22 +1,22 @@
-import { Spinner } from '@blueprintjs/core';
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { getPaginatedUsers, source, User } from '../../api';
-import { LStorage } from '../../api/localstorage';
+import { getPaginatedUsers, getUserByEmail, source, User } from '../../api';
+import { LStorage } from '../../api/localstorageHelpers';
 import Content from '../../components/layout/Content';
 import Footer from '../../components/layout/Footer';
 import Header from '../../components/layout/Header';
 import MainLayout from '../../components/layout/MainLayout';
-import Table from '../../components/layout/Table';
 import Pagination from '../../components/ui-elements/Pagination';
-import TableRow from './dashboard.styles';
+import UsersTable from './UsersTable';
 
-type UserList = Array<Omit<User, 'password'>>;
+export type UserList = Array<Omit<User, 'password'>>;
 interface DashboardState {
   usersList?: UserList;
   currentPage: number;
   usersPerPage: number;
-  pages?: number;
+  totalPages?: number;
+  currentUserEmail: string;
+  currentUserInfo: Pick<User, 'id' | 'role' | 'name'>;
 }
 
 class Dashboard extends PureComponent<RouteComponentProps, DashboardState> {
@@ -26,85 +26,87 @@ class Dashboard extends PureComponent<RouteComponentProps, DashboardState> {
     this.state = {
       usersList: undefined,
       currentPage: 1,
-      usersPerPage: 10,
-      pages: undefined,
+      usersPerPage: 12,
+      totalPages: 1,
+      currentUserEmail: '',
+      currentUserInfo: {
+        id: '',
+        role: '',
+        name: ''
+      }
     }
   }
 
-  public checkAuth(authToken: string | null) {
-    if (!authToken) {
-      this.props.history.replace('/login');
-    }
-    return true;
-  }
-
-  public async fetchUsers(currentPage: number) {
-    const currentUsers = await getPaginatedUsers(currentPage, this.state.usersPerPage);
+  public fetchUsers = async (currentPage?: number) => {
+    const fetchData = await getPaginatedUsers(currentPage || this.state.currentPage, this.state.usersPerPage);
     this.setState({
-      usersList: currentUsers.data,
-      currentPage,
+      usersList: fetchData.data,
+      currentPage: currentPage || (this.state.currentPage > fetchData.pages ? fetchData.pages : this.state.currentPage),
+      totalPages: fetchData.pages
     });
   }
 
+  public fetchCurrentUser = async (email: string) => {
+    const currentUser = await getUserByEmail(email);
+    this.setState({
+      currentUserInfo: currentUser
+    })
+  }
 
-  public async componentDidMount() {
+
+  public componentDidMount() {
+    const { currentPage, usersPerPage } = this.state;
+    const LSuserEmail = LStorage.getCurrentUserEmail();
 
     if (!LStorage.getAuthToken()) {
       this.props.history.replace('/login');
       return;
     }
 
-    const initialUsers = await getPaginatedUsers(this.state.currentPage, this.state.usersPerPage);
-    setTimeout(() => {
+    getUserByEmail(LSuserEmail).then(res => {
       this.setState({
-        usersList: initialUsers.data,
-        pages: initialUsers.pages
+        currentUserInfo: res
+      })
+    }).catch((err) => {
+      if (process.env.NODE_ENV === 'development') {
+        alert(err)
+      }
+
+    });
+
+    getPaginatedUsers(currentPage, usersPerPage).then((res) => {
+      this.setState({
+        usersList: res.data,
+        totalPages: res.pages,
+        currentUserEmail: LStorage.getCurrentUserEmail(),
       });
-    }, 500)
+    }).catch((err) => {
+      if (process.env.NODE_ENV === 'development') {
+        alert(err)
+      }
+    });
   }
 
   public componentWillUnmount() {
+    // cancelling all Axios fetch promises
     source.cancel();
   }
 
   public render() {
-    const { usersList, pages, currentPage } = this.state;
+    const { usersList, totalPages, currentPage, currentUserInfo } = this.state;
     return (
       <MainLayout>
         <Header />
         <Content p={10} >
-          {usersList ?
-            <>
-              <Table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersList.map((user, i) => {
-                    return (
-                      <TableRow key={user.id}>
-                        <td className="user__name">{user.name}</td>
-                        <td className="user__email">{user.email}</td>
-                        <td className="user__role">{user.role}</td>
-                      </TableRow>
-                    )
-                  })}
-                </tbody>
-              </Table>
-              <Pagination
-                totalPages={pages ? pages : 0}
-                currentPage={currentPage}
-                buttonOnClick={(pageNumber) => {
-                  this.fetchUsers(pageNumber);
-                }} />
-            </> :
-            <div style={{ height: '100%', display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
-              <Spinner />
-            </div>}
+          <h2 style={{ textAlign: 'center' }}>Welcome {currentUserInfo.name}!</h2>
+          <UsersTable usersList={usersList}
+            isAdmin={currentUserInfo.role === 'admin'} fetchUsers={this.fetchUsers} />
+          <Pagination
+            totalPages={totalPages || 0}
+            currentPage={currentPage}
+            buttonOnClick={(pageNumber) => {
+              this.fetchUsers(pageNumber);
+            }} />
         </Content>
         <Footer />
       </MainLayout>

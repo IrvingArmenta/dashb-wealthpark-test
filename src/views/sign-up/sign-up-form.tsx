@@ -4,6 +4,7 @@ import Form from '../../components/form';
 import { ErrorMsg, TextInput } from '../../components/form/molecules';
 
 import { Formik, FormikActions, FormikProps } from 'formik';
+import { Link } from 'react-router-dom';
 import { createUser } from '../../api';
 import SignUpSchema from './form-schema';
 
@@ -36,6 +37,7 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
       return (
         <div style={{ textAlign: 'center' }}>
           <h2>User was created</h2>
+          <Link to="/login">Go to login</Link>
         </div>
       )
     }
@@ -52,7 +54,7 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
               name: values.name,
               email: values.email,
               password: values.password,
-              role: 'user'
+              role: "user"
             };
 
             setTimeout(() => {
@@ -81,28 +83,30 @@ class SignUpForm extends PureComponent<{}, SignUpFormState> {
                 <FormGroup label="Name" labelFor="name" labelInfo="(required)">
                   <TextInput id="name" name="name" value={values.name}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.name && errors.name} />
+                    showerror={touched.name && errors.name ? 'true' : 'false'} />
                   <ErrorMsg name="name" />
                 </FormGroup>
 
                 <FormGroup label="Email" labelFor="email" labelInfo="(required)" >
                   <TextInput id="email" name="email" value={values.email}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.email && errors.email} type="email" autoComplete="username" />
+                    showerror={touched.email && errors.email ? 'true' : 'false'} type="email" autoComplete="username" />
                   <ErrorMsg name="email" />
                 </FormGroup>
 
                 <FormGroup label="Password" labelFor="password" labelInfo="(required)" >
                   <TextInput id="password" name="password" value={values.password}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.password && errors.password} type="password" autoComplete="new-password" />
+                    showerror={touched.password && errors.password ? 'true' : 'false'} 
+                    type="password" autoComplete="new-password" />
                   <ErrorMsg name="password" />
                 </FormGroup>
 
                 <FormGroup label="Password confirmation" labelFor="passConfirm" labelInfo="(required)" >
                   <TextInput id="passConfirm" name="passConfirm" value={values.passConfirm}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.passConfirm && errors.passConfirm} type="password" autoComplete="new-password" />
+                    showerror={touched.passConfirm && errors.passConfirm ?'true': 'false'} 
+                    type="password" autoComplete="new-password" />
                   <ErrorMsg name="passConfirm" />
                 </FormGroup>
 

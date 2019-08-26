@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
 import { Box } from '../../components/layout/Box';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Header from '../../components/layout/Header';
@@ -15,10 +14,6 @@ class SignIn extends PureComponent {
             <h2 className="box__title">Sign Up</h2>
           </header>
           <SignUpForm />
-          <div className="box__bottom">
-            <p>Already have an account?</p>
-            <Link to="/login" >Go to login screen</Link>
-          </div>
         </Box>
       </CenteredLayout>
     )

@@ -5,6 +5,10 @@ const TableRow = styled.tr<{key: string}>`
     &__name {
       font-weight: bold;
     }
+    &__actions {
+      width: 45px;
+      text-align: center;
+    }
   }
 `;
 

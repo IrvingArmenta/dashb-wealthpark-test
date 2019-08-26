@@ -34,9 +34,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently \"node ./backend/server.js\" \"npm start\"",
-    "server": "node ./backend/server.js",
-    "seed": "node ./backend/seed.js",
+    "dev": "concurrently \"nodemon ./backend/server.js\" \"npm start\"",
+    "server": "nodemon ./backend/server.js",
+    "server:seed": "node ./backend/seed.js",
     "docker:mongo": "concurrently \"docker pull mongo:4.2.0\" \"docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.2.0\""
   },
   "eslintConfig": {
@@ -63,6 +63,8 @@
     "@types/react-router-dom": "^4.3.4",
     "@types/styled-components": "^4.1.18",
     "@types/yup": "^0.26.22",
+    "eslint": "^6.2.1",
+    "nodemon": "^1.19.1",
     "promise-polyfill": "^8.1.3",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",

@@ -20,9 +20,6 @@ const StyledLayoutContainer = styled.div<{ bgColor?: string }>`
       top: 0;
       left: 0;
       right: 0;
-      .right {
-        display: none;
-      }
       background-color: transparent;
       border-bottom: 1px solid ${p => p.theme.colors.grayscale[300]};
   }

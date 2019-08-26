@@ -1,11 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Box } from '../../components/layout/Box';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Header from '../../components/layout/Header';
 import LoginForm from './login-form';
 
-class Login extends PureComponent {
+class Login extends PureComponent<RouteComponentProps> {
+
+
+  public componentDidMount = () => {
+    
+  }
 
   public render() {
     return (
@@ -26,4 +31,4 @@ class Login extends PureComponent {
   }
 }
 
-export default Login;
+export default withRouter(Login);

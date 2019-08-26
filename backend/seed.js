@@ -1,19 +1,15 @@
 "use strict";
 
-const Spinner = require('cli-spinner').Spinner;
+let numberOfUSers = parseInt(process.argv.slice(2)[0], 10) - 1;
+
 const MongoClient = require('mongodb').MongoClient;
 const bcrypt = require('bcryptjs');
 const faker = require('faker');
-
 
 const mongoDBoptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
-
-Spinner.setDefaultSpinnerString(20);
-
-const Spin = new Spinner('Generating users... %s');
 
 // this is to avoid duplicates
 faker.seed(123);
@@ -24,15 +20,13 @@ function seedDB() {
 
     let dbo = db.db('dashb');
 
-  Spin.start();
-    const fakeArr = new Array(64).fill(null)
-                       .map((e, i) => e = faker.name.firstName())
+    console.log('* ---- Generating seed users... ---- *');
+    const fakeArr = new Array(numberOfUSers || 64).fill(null)
+      .map((e, i) => e = faker.name.firstName())
 
-    fakeArr.push('Admin');
+    fakeArr.unshift('Admin');
 
-    const names = fakeArr;
-    
-    const usersArr = names.map(async (name) => {
+    const usersArr = fakeArr.map(async (name) => {
 
       // passing encrypted password 
       let password = `password-${name.toLowerCase()}`;
@@ -54,7 +48,7 @@ function seedDB() {
           password,
         }
       }
-      
+
     });
 
 
@@ -67,20 +61,20 @@ function seedDB() {
         // close the connection to db when you are done with it
         db.close();
       });
-      
+
       // populating the collection
       dbo.collection("users").insertMany(newUsers, (err, res) => {
         if (err) throw err;
         console.log("* ---- users inserted! ---- *");
         // close the connection to db when you are done with it
         db.close();
+        console.log('* ---- Database was seeded ---- *');
       });
 
-      Spin.stop();
     });
- 
+
   });
-  
+
 }
 
 seedDB();

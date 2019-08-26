@@ -6,7 +6,7 @@ import { ErrorMsg, TextInput } from '../../components/form/molecules';
 import { Formik, FormikActions, FormikProps } from 'formik';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { authUser } from '../../api';
-import { LStorage } from '../../api/localstorage';
+import { LStorage } from '../../api/localstorageHelpers';
 import LoginSchema from './form-schema';
 
 interface LoginFormValues {
@@ -42,26 +42,26 @@ class LoginForm extends PureComponent<RouteComponentProps, LoginFormState> {
               password: values.password,
             };
 
-            authUser(userCredentials).then(res => {
-              const authData = res.data;
-              
-              if (authData.success) {
-                LStorage.setAuthToken(authData.token);
+            const getAuthData = async () => {
+              return await authUser(userCredentials);
+            }
 
-                this.props.history.replace('/dashboard', {
-                  loggedUser: authData.email,
-                });
-
+            getAuthData().then(authData => {
+              const { success, token, message } = authData;
+              if (!success) {
+                this.setState({
+                  error: true,
+                  errorMsg: message
+                })
+                actions.setSubmitting(false);
                 return;
               }
+              LStorage.setAuthToken(token);
+              LStorage.setCurrentUserEmail(userCredentials.email);
+              this.props.history.replace('/dashboard');
+              actions.setSubmitting(false);
+            })
 
-              this.setState({
-                error: true,
-                errorMsg: authData.message
-              });
-            }).catch(err => alert(`server error: ${err}`));
-
-            actions.setSubmitting(false);
           }}
           render={(props: FormikProps<LoginFormValues>) => {
             const { handleBlur, handleChange, touched, errors, values, submitForm } = props;
@@ -71,14 +71,16 @@ class LoginForm extends PureComponent<RouteComponentProps, LoginFormState> {
                 <FormGroup label="Email" labelFor="email" labelInfo="(required)" >
                   <TextInput id="email" name="email" value={values.email}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.email && errors.email} type="email" autoComplete="username" />
+                    showerror={touched.email && errors.email ? 'true' : 'false'} 
+                    type="email" autoComplete="username" />
                   <ErrorMsg name="email" />
                 </FormGroup>
 
                 <FormGroup label="Password" labelFor="password" labelInfo="(required)" >
                   <TextInput id="password" name="password" value={values.password}
                     onChange={handleChange} onBlur={handleBlur}
-                    showerror={touched.password && errors.password} type="password" autoComplete="new-password" />
+                    showerror={touched.password && errors.password ? 'true' : 'false'} 
+                    type="password" autoComplete="new-password" />
                   <ErrorMsg name="password" />
                 </FormGroup>
 

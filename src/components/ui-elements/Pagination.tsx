@@ -16,10 +16,12 @@ const PaginationJSX = (props: PaginationProps) => {
   for (let i = 1; i <= totalPages; i = i + 1) {
     buttons.push(
       <li key={`page${i}`} className={`page-item ${currentPage === i ? "active" : ""}`} >
-          {currentPage === i ?
+        {
+          currentPage === i ?
             <span className="page-button">{i}</span> :
-            <button onClick={() => buttonOnClick(i) } className="page-button">{i}</button>}
-        </li>
+            <button onClick={() => buttonOnClick(i)} className="page-button">{i}</button>
+        }
+      </li>
     )
   }
   return (
@@ -33,7 +35,7 @@ const Pagination = styled(PaginationJSX)`
     display: flex;
     padding-left: 0;
     list-style: none;
-    border-radius: .25rem;
+    border-radius: ${pxToRem('4px')};
     justify-content: center;
 
     .page-item {
@@ -48,13 +50,21 @@ const Pagination = styled(PaginationJSX)`
       &:first-child {
         .page-button{
           margin-left: 0;
-          border-top-left-radius: .25rem;
-          border-bottom-left-radius: .25rem;
+          border-top-left-radius: ${pxToRem('4px')};
+          border-bottom-left-radius: ${pxToRem('4px')};
+        }
+      }
+      &:last-child {
+        .page-button{
+          margin-left: 0;
+          border-top-right-radius: ${pxToRem('4px')};
+          border-bottom-right-radius: ${pxToRem('4px')};
         }
       }
     }
 
     .page-button{
+      user-select: none;
       cursor: pointer;
       position: relative;
       display: block;

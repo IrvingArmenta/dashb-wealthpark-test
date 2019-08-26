@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@blueprintjs/core": "^3.18.0",
     "@smooth-ui/core-sc": "^10.1.0",
     "@types/jest": "24.0.17",
     "@types/node": "12.7.2",
@@ -10,27 +11,33 @@
     "@types/react-dom": "16.8.5",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
+    "cli-spinner": "^0.2.10",
     "concurrently": "^4.1.2",
     "express": "^4.17.1",
+    "formik": "^1.5.8",
+    "lscache": "^1.3.0",
+    "moment": "^2.24.0",
     "mongodb": "^3.3.0",
     "mongoose": "^5.6.9",
+    "polished": "^3.4.1",
     "react": "^16.9.0",
     "react-app-polyfill": "^1.0.2",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.1.1",
-    "rendition": "^11.8.0",
     "styled-components": "^4.3.2",
-    "typescript": "3.5.3"
+    "typescript": "3.5.3",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "concurrently \"node ./backend/server.js\" \"npm start\"",
-    "mongo": "node ./backend/server.js",
-    "seed": "DEBUG=mongo-seeding node ./data-seed/index.js"
+    "dev": "concurrently \"nodemon ./backend/server.js\" \"npm start\"",
+    "server": "nodemon ./backend/server.js",
+    "server:seed": "node ./backend/seed.js",
+    "docker:mongo": "concurrently \"docker pull mongo:4.2.0\" \"docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.2.0\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,9 +55,17 @@
       "last 1 safari version"
     ]
   },
+  "proxy": "http://localhost:3001",
   "devDependencies": {
     "@openapitools/openapi-generator-cli": "0.0.16-4.1.0",
+    "@types/lscache": "^1.3.0",
     "@types/mongodb": "^3.2.3",
+    "@types/react-router-dom": "^4.3.4",
+    "@types/styled-components": "^4.1.18",
+    "@types/yup": "^0.26.22",
+    "eslint": "^6.2.1",
+    "nodemon": "^1.19.1",
+    "promise-polyfill": "^8.1.3",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-consistent-codestyle": "^1.15.1",

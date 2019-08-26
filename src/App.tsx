@@ -1,30 +1,33 @@
-import React from 'react';
-import { Box, Button, Provider } from 'rendition';
-import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { defaultTheme } from './global-styles/default-theme';
+import GlobalStyle from './global-styles/GlobalStyle';
 
-const App = () => {
-  
-  return (
-    <Provider>
-      <div className="App">
-        <header className="App-header">
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-            <Button>TEST</Button>
-            </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-            </a>
-        </header>
-      </div>
-    </Provider>
-  );
+// App views
+import MainView from './views/dashboard';
+import Home from './views/home';
+import LoginView from './views/login';
+import SignUpView from './views/sign-up';
 
+class App extends Component {
+  public render() {
+    return (
+      <ThemeProvider theme={defaultTheme}>
+        <>
+          <GlobalStyle />
+          <BrowserRouter>
+            <Switch>
+              <Route exact={true} path="/" render={() => <Home />} />
+              <Route path="/dashboard" render={() => <MainView />} />
+              <Route path="/signup" render={() => <SignUpView />} />
+              <Route path="/login" render={() => <LoginView />} />
+            </Switch>
+          </BrowserRouter>
+        </>
+      </ThemeProvider>
+    );
+  }
 }
 
 export default App;

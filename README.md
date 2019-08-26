@@ -1,3 +1,96 @@
+# Dashb - dashboard test implementation
+
+## Technical Stack  - (MERN stack: MongoDB - Express - React - Nodejs);
+
+#### Frontend
+- [React](https://github.com/facebook/react) - JS framework
+- [Blueprint JS](https://blueprintjs.com/docs/#core) - UI framework
+- [styled-components](https://www.styled-components.com/) - styling
+- [Formik](https://jaredpalmer.com/formik/) - Form validation
+- [lscache](https://github.com/pamelafox/lscache) - local storage management
+
+#### Backend 
+- [Docker](https://www.docker.com/)
+- [MongoDB](https://www.mongodb.com/jp)
+- [Mongoose](https://github.com/Automattic/mongoose)
+- [NodeJS](https://nodejs.org/ja/)
+- [express](https://expressjs.com/ja/api.html)
+
+---
+## Steps to start local development 
+
+### 1 - Prerequisites 
+- You need to have [Docker](https://www.docker.com/) installed on your machine.
+- You need to have [MongoDB](https://www.mongodb.com/jp) installed on your machine - [OSX](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+- You need to have [NodeJS](https://nodejs.org/ja/) installed on yout machine.
+
+### 2 - Getting the files 
+- Just clone the `master` branch of this repository to a local folder on your machine. 
+- Get into the folder `.../dashb-mongo-ts` 
+
+### 3 - npm scripts 
+- You need to install dependencies with npm 
+```
+$ npm install
+```
+
+- Once everything is installed , you need to setup the mongodb image and the mongodb container on Docker, just type: 
+```
+$ npm run docker:mongo
+```
+
+- Once the image has been setup you can check the local mongodb database on your machine by typing: 
+```
+$ docker exec -it mongodb bash
+``` 
+and then typing 
+```
+$ mongo 
+``` 
+this will grant you access to the mongodb bash commands. 
+
+
+- Now let's seed the database with fake generated users, just type:
+```
+$ npm run server:seed
+```
+- Once the server is seeded and ready just type: 
+```
+$ npm run dev 
+```
+This will run the Mongodb backend server on `http://localhost:3333/` and start the frontend application on `http://localhost:3000/`
+Sometimes this process may take a while, please wait. 
+
+The seed function has only one `admin` user , only `admin` users can see the `actions` columns on the `/dashboard`, the credentials for each user are:
+
+```
+email: ${name}@email.com
+password:  password-${name}
+```
+
+the main admin account is:
+```
+email: admin@email.com
+password: password-admin
+```
+This should grant you access to the `/dashboard` and the `actions` columns. 
+
+### 4 - problems?
+Please always be aware that the Server must be running in order for the app to work. 
+All configurations related to the mongodb server are in the `/backend` folder. 
+If you encounter any issue just let a message on the `issues` section of this repostory or send me an email: `irvingarmentajd@email.com`
+
+---
+
+## TODO - 2019/18/26
+- Animations with React-Pose (editing and removing users from table should be animated)
+- More functionality and options
+- Improve security of API and stronger schema for forms (password) 
+
+---
+
+# Create React App original readme
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

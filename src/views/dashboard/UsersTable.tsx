@@ -1,4 +1,5 @@
 import { Alert, Button, Icon, Intent, Menu, Popover, Spinner } from '@blueprintjs/core';
+import { motion } from 'framer-motion';
 import React, { PureComponent } from 'react';
 import { UserList } from '.';
 import { deleteUser, User } from '../../api';
@@ -52,10 +53,17 @@ class UsersTable extends PureComponent<UsersTableProps, UsersTableState> {
               {isAdmin && <th>Actions</th>}
             </tr>
           </thead>
-          <tbody>
-            {usersList.map((user) => {
+          <motion.tbody initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          transition={{ staggerChildren: 2, when: "beforeChildren"}}>
+            {usersList.map((user, i) => {
+              const t = parseFloat((i / 50).toFixed(2));
               return (
-                <TableRow key={user.id}>
+                <TableRow key={user.id}
+                  positionTransition={true}
+                  transition={{ delay: t }}
+                  initial={{ opacity: 0, x: -100 }}
+                  animate={{ opacity: 1, x: 0 }}>
                   <td className="user__name">{user.name}</td>
                   <td className="user__email">{user.email}</td>
                   <td className="user__role">{user.role}</td>
@@ -81,18 +89,18 @@ class UsersTable extends PureComponent<UsersTableProps, UsersTableState> {
                 </TableRow>
               )
             })}
-          </tbody>
+          </motion.tbody>
         </Table>
         {selectedUser &&
-          <EditUserForm 
-          selectedUser={selectedUser}
-          fetchUsers={this.props.fetchUsers} 
-          isOpen={this.state.editModalIsOpen} 
-          onClose={() => this.setState({ editModalIsOpen: false, selectedUser: undefined })} />
+          <EditUserForm
+            selectedUser={selectedUser}
+            fetchUsers={this.props.fetchUsers}
+            isOpen={this.state.editModalIsOpen}
+            onClose={() => this.setState({ editModalIsOpen: false, selectedUser: undefined })} />
         }
         {selectedUser &&
-          <Alert 
-          isOpen={this.state.confirmDelete}
+          <Alert
+            isOpen={this.state.confirmDelete}
             confirmButtonText="Yes"
             cancelButtonText="Cancel"
             onCancel={() => this.setState({ confirmDelete: false, selectedUser: undefined })}

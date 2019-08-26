@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import StyledHeader from './Header/Header.style';
@@ -5,7 +6,7 @@ import StyledHeader from './Header/Header.style';
 class CenteredLayout extends PureComponent {
   public render() {
     return (
-      <StyledLayoutContainer className="app">
+      <StyledLayoutContainer className="app" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <div>
           {this.props.children}
         </div>
@@ -14,7 +15,7 @@ class CenteredLayout extends PureComponent {
   }
 }
 
-const StyledLayoutContainer = styled.div<{ bgColor?: string }>`
+const StyledLayoutContainer = styled(motion.div)<{ bgColor?: string }>`
   ${StyledHeader} {
       position: absolute;
       top: 0;

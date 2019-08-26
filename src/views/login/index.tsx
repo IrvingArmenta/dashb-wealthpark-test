@@ -7,11 +7,6 @@ import LoginForm from './login-form';
 
 class Login extends PureComponent<RouteComponentProps> {
 
-
-  public componentDidMount = () => {
-    
-  }
-
   public render() {
     return (
       <CenteredLayout>

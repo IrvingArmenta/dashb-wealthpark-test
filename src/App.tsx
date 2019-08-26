@@ -1,3 +1,4 @@
+import { AnimatePresence } from 'framer-motion';
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -17,17 +18,23 @@ class App extends Component {
         <>
           <GlobalStyle />
           <BrowserRouter>
-            <Switch>
-              <Route exact={true} path="/" render={() => <Home />} />
-              <Route path="/dashboard" render={() => <MainView />} />
-              <Route path="/signup" render={() => <SignUpView />} />
-              <Route path="/login" render={() => <LoginView />} />
-            </Switch>
+            <Route render={({ location }) => {
+              return (
+                <Switch location={location}>
+                  <Route exact={true} path="/" render={() => <Home />} />
+                  <Route path="/dashboard" render={() => <MainView />} />
+                  <Route path="/signup" render={() => <SignUpView />} />
+                  <Route path="/login" render={() => <LoginView />} />
+                </Switch>
+              )
+            }} />
           </BrowserRouter>
         </>
       </ThemeProvider>
     );
   }
 }
+
+
 
 export default App;

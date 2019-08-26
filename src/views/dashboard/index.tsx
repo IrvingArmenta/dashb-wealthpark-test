@@ -95,7 +95,7 @@ class Dashboard extends PureComponent<RouteComponentProps, DashboardState> {
   public render() {
     const { usersList, totalPages, currentPage, currentUserInfo } = this.state;
     return (
-      <MainLayout>
+      <MainLayout animate={{ opacity: 1 }} exit={{ opacity: 0 }} initial={{ opacity: 0 }}>
         <Header />
         <Content p={10} >
           <h2 style={{ textAlign: 'center' }}>Welcome {currentUserInfo.name}!</h2>

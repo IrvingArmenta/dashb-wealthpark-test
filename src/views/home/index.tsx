@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import StyledHome from './home.styles';

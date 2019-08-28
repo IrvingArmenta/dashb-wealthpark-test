@@ -14,7 +14,7 @@ interface DashboardState {
   usersList?: UserList;
   currentPage: number;
   usersPerPage: number;
-  totalPages?: number;
+  totalPages: number;
   currentUserEmail: string;
   currentUserInfo: Pick<User, 'id' | 'role' | 'name'>;
 }

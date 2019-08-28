@@ -1,4 +1,4 @@
-import { Classes, HTMLTable } from '@blueprintjs/core';
+import { Classes } from '@blueprintjs/core';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 

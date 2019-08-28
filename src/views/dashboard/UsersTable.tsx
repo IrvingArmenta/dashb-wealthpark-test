@@ -62,8 +62,8 @@ class UsersTable extends PureComponent<UsersTableProps, UsersTableState> {
                 <TableRow key={user.id}
                   positionTransition={true}
                   transition={{ delay: t }}
-                  initial={{ opacity: 0, x: -100 }}
-                  animate={{ opacity: 1, x: 0 }}>
+                  initial={{ opacity: 0, y: -100 }}
+                  animate={{ opacity: 1, y: 0 }}>
                   <td className="user__name">{user.name}</td>
                   <td className="user__email">{user.email}</td>
                   <td className="user__role">{user.role}</td>

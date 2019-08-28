@@ -1,5 +1,4 @@
-import { AnimatePresence } from 'framer-motion';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme } from './global-styles/default-theme';
@@ -11,7 +10,8 @@ import Home from './views/home';
 import LoginView from './views/login';
 import SignUpView from './views/sign-up';
 
-class App extends Component {
+class App extends PureComponent {
+
   public render() {
     return (
       <ThemeProvider theme={defaultTheme}>

@@ -1,0 +1,354 @@
+openapi: 3.0.0
+info:
+  description: DashB API definition
+  version: 0.0.1
+  title: DashB API
+license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+x-logo:
+  url: "https://cdn1.imggmi.com/uploads/2019/8/27/611f7df0c8fd3b79da479205ef0c568c-full.png"
+  altText: 'Dashb logo'
+servers:
+  - url: 'http://localhost:3333'
+paths:
+  /api/getUsers:
+    get:
+      tags:
+        - Users
+      summary: Returns all users
+      description: Returns all users in the database
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/User'
+                example:
+                  success: true,
+                  data:
+                    - id: 5d638648274eca79532b1d23
+                      name: Minerva
+                      email: minerva@email.com
+                      role: user
+                    - id: 5d638648274eca79532b1d21
+                      name: Grunt
+                      email: grunt@email.com
+                      role: admin
+  /api/getPaginatedUsers:
+    post: 
+      tags: 
+        - Users
+      summary: Returns paginated users
+      description: Returns number of users based of the request body params
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: boolean
+                  pages:
+                    type: number
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        email:
+                          type: string
+                        role: 
+                          type: string
+                example: 
+                  error: false
+                  pages: 5
+                  data:
+                    - id: 5d638648274eca79532b1d23
+                      name: Minerva
+                      email: minerva@email.com
+                      role: user
+                    - id: 5d638648274eca79532b1d21
+                      name: Grunt
+                      email: grunt@email.com
+                      role: admin
+                    - id: 5d638648274ecd79532e1a21
+                      name: Gunman
+                      email: gunman@email.com
+                      role: user
+      requestBody:
+        description: Get paginated users
+        content: 
+          application/json: 
+            schema:
+              type: object 
+              properties:
+                pageNo: 
+                  type: number
+                usersPerPage:
+                  type: number
+              required:
+                - pageNo
+                - usersPerPage
+  /api/getUserByEmail:
+    post:
+      tags: 
+        - Users
+      summary: Get a single user by providing the email
+      description: Finds a single user by email
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  role:
+                    type: string
+                example: 
+                  - id: 5d638648274eca79532b1d23
+                    name: Minerva
+                    role: user
+      requestBody:
+        description: Get user by email
+        content: 
+          application/json: 
+            schema:
+              type: object 
+              properties:
+                email: 
+                  type: string
+              required:
+                - email
+  /api/updateUser:
+    post:
+      tags: 
+        - Users
+      summary: Update the data of a user
+      description: Gets an user and update the info of it
+      parameters: 
+        - in: header
+          name: x-auth-token
+          schema:
+            type: string
+            example: 
+              x-auth-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDYzODY0ODI3NGVjYTc5NTMyYjFkMGQiLCJpYXQiOjE1NjY4NzMwMTN9.CwMdxX-29ADrlYbstpdmR8llqUOR0oaGBWeTVxolYT4
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                example: 
+                  - name: new user name
+                    email: username@email.com
+                    role: user
+      requestBody:
+        description: Update the info of an user by id
+        content: 
+          application/json: 
+            schema:
+              type: object 
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    update:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        email:
+                          type: string
+                        role:
+                          type: string
+              example: 
+                data: {
+                  id: 5d638648274eca79532b1d23,
+                  update: {
+                    name: username,
+                    password: password,
+                    email: username@email.com,
+                    role: user
+                  }
+                }
+  /api/createUser:
+    post:
+      tags: 
+        - Users
+      summary: Creation of a new user
+      description: Creates a new user based off the information on request body
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                example: 
+                  - id: 5d638648274eca79532b1d23
+                    name: UserName
+                    email: username@email.com
+                  
+      requestBody:
+        description: Information of new user
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              example: 
+                name: username
+                email: username@email.com
+                password: password-username
+  /api/authUser:
+    post:
+      tags: 
+        - Users
+      summary: Authentication of an user
+      description: Authenticates and generates a jwt (json web token) for the user
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  token:
+                    type: string
+                example: 
+                  - success: true
+                    message: Authentication successfully finished
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDYzODY0ODI3NGVjYTc5NTMyYjFkMGQiLCJpYXQiOjE1NjY4NzMwMTN9.CwMdxX-29ADrlYbstpdmR8llqUOR0oaGBWeTVxolYT4
+                  
+      requestBody:
+        description: User credentials
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              example: 
+                email: username@email.com
+                password: password-username
+  /api/deleteUser:
+    delete:
+      tags: 
+        - Users
+      summary: Deletes an user from db
+      description: Finds a single user by ID and deletes it from db
+      
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+      requestBody:
+        description: id of the user to be deleted 
+        content:
+          application/json:
+            schema: 
+              type: object
+              properties:
+                id:
+                  type: string
+              example: 
+                id: 5d638648274eca79532b1d23
+  
+  
+  
+components:
+  requestBodies:
+    NewUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+          example:
+            id: 5d638648274eca79532b1d23
+            name: Django
+            email: django@email.com
+            password: password-django
+            role: user
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 5d638648274eca79532b1d23
+          description: user unique id
+        name:
+          type: string
+          example: Minerva
+          description: name of the user
+        email:
+          type: string
+          example: minerva@email.com
+          description: email of the user
+        password:
+          type: string
+          example: password-minerva
+          description: account password
+        role:
+          type: string
+          example: Role of the user
+          description: role of the user in the community
+      required:
+        - name
+        - password
+        - email

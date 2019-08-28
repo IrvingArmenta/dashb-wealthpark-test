@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { LStorage } from '../../api/localstorageHelpers';
 import { Box } from '../../components/layout/Box';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Header from '../../components/layout/Header';
 import LoginForm from './login-form';
 
 class Login extends PureComponent<RouteComponentProps> {
-
-
+  
   public componentDidMount = () => {
-    
+    if (LStorage.getAuthToken()) {
+      this.props.history.replace('/dashboard');
+      return;
+    }
   }
 
   public render() {

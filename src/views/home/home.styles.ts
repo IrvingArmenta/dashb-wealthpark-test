@@ -1,6 +1,7 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-const StyledHome = styled.div`
+const StyledHome = styled(motion.div)`
 
   height: 100%;
   background-color: ${p => p.theme.colors.primary};

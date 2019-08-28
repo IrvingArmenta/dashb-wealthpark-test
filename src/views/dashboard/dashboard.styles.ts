@@ -1,6 +1,7 @@
+import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-const TableRow = styled.tr<{key: string}>`
+const TableRow = styled(motion.tr)<{key: string}>`
   .user {
     &__name {
       font-weight: bold;

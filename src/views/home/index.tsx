@@ -4,11 +4,13 @@ import StyledHome from './home.styles';
 
 const Home = (props: RouteComponentProps) => {
   return (
-    <StyledHome>
+    <StyledHome
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}>
       <h1>DashB</h1>
       <div className="buttons-wrap">
-      <a href="/login">Login</a>
-      <a href="/signup">Sign Up</a>
+        <a href="/login">Login</a>
+        <a href="/signup">Sign Up</a>
       </div>
     </StyledHome>
   )

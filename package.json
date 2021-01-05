@@ -9,7 +9,7 @@
     "@types/node": "12.7.2",
     "@types/react": "16.9.2",
     "@types/react-dom": "16.8.5",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cli-spinner": "^0.2.10",
     "concurrently": "^4.1.2",
